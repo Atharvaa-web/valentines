@@ -102,9 +102,10 @@
 
 <body>
 
-<audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9b9f8b2b9e.mp3" type="audio/mpeg">
+<audio id="bgMusic" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
 </audio>
+
 
 
 <div class="card">
@@ -122,6 +123,18 @@
 </div>
 
 <script>
+const music = document.getElementById("bgMusic");
+
+function startMusic() {
+  music.volume = 0.6;
+  music.play().catch(err => console.log(err));
+  document.removeEventListener("click", startMusic);
+}
+
+// browser allows audio only after interaction
+document.addEventListener("click", startMusic);
+
+  
   /* Typing */
   const text = "Sanika ❤️";
   let i = 0;
