@@ -25,6 +25,7 @@
     width: 320px;
     position: relative;
     z-index: 2;
+    animation: fadeIn 1s ease;
   }
 
   h1 {
@@ -86,26 +87,62 @@
   }
 
   @keyframes floatUp {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    100% {
+    to {
       transform: translateY(-110vh);
       opacity: 0;
     }
+  }
+
+  /* ✨ Final screen */
+  .final {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg,#ff5f6d,#ffc371);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    animation: fadeZoom 1.2s ease forwards;
+    z-index: 5;
+  }
+
+  .final h2 {
+    font-size: 48px;
+    animation: pulse 1.5s infinite;
+  }
+
+  .final p {
+    font-size: 26px;
+    margin-top: 10px;
+  }
+
+  @keyframes fadeZoom {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
 
 <body>
 
-<!-- 🎵 Offline Music -->
+<!-- 🎵 Music stays OUTSIDE so it never stops -->
 <audio id="bgMusic" preload="auto" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<div class="card">
+<div class="card" id="card">
   <h1 id="name"></h1>
   <img src="sanika.jpeg" alt="Sanika">
   <p>Sanika, will you be my Valentine? 💘</p>
@@ -119,7 +156,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* Typing effect */
   const nameEl = document.getElementById("name");
   const text = "Sanika ❤️";
   let i = 0;
@@ -143,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "YES hi destiny hai 😏"
   ];
 
-  /* 🎵 Play music ONCE, continue looping */
   let musicStarted = false;
   document.addEventListener("click", () => {
     if (!musicStarted) {
@@ -153,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* NO button escape logic */
   document.addEventListener("mousemove", (e) => {
     const r = noBtn.getBoundingClientRect();
     const dx = Math.abs(e.clientX - (r.left + r.width / 2));
@@ -166,24 +200,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* YES button */
   yesBtn.addEventListener("click", () => {
-    document.body.innerHTML = `
-      <div style="
-        height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        background:linear-gradient(135deg,#ff5f6d,#ffc371);
-        color:white;
-        font-size:40px;
-        text-align:center;">
-        SHE SAID YES!!! 💍❤️<br>Sanika, I love you 😘
-      </div>
+    document.getElementById("card").remove();
+
+    const final = document.createElement("div");
+    final.className = "final";
+    final.innerHTML = `
+      <h2>SHE SAID YES!!! 💍❤️</h2>
+      <p>Sanika, I love you forever 😘</p>
     `;
+    document.body.appendChild(final);
+
+    // 💥 Heart explosion
+    for (let i = 0; i < 80; i++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.innerHTML = "❤️";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.fontSize = Math.random() * 30 + 20 + "px";
+      h.style.animationDuration = "3s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 3000);
+    }
   });
 
-  /* ❤️ Floating hearts generator */
+  // ❤️ Background hearts
   setInterval(() => {
     const heart = document.createElement("div");
     heart.className = "heart";
